@@ -1,13 +1,12 @@
-// import { CORE_API } from "../constants/api";
-// import { KeyValues } from "../constants/interfaces";
 import { getData } from "./common.service";
 
-export const getAnomalousPlots = async () => {
-  const url = '/get-anomalous-plots?sinceHours=24'
-  return getData(url, {
-    sendTokenInHeader: true,
-    // basePath: CORE_API
-  })
+export const getBikesThefts = async (urlOptions:any) => {
+
+  const useBikeTheftCoreAPI:boolean = true;
+  const options:any = urlOptions;
+
+  return getData(useBikeTheftCoreAPI, options);
+
 }
 
 

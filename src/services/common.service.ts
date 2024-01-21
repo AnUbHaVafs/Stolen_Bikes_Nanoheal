@@ -18,7 +18,7 @@ export async function handleErrors(response: Response) {
   return response.status === 200 ? response.json() : undefined;
 }
 
-function getAccessToken(): string {
+export function getAccessToken(): string {
   return localStorage.getItem('access_token') as string;
 }
 
@@ -30,40 +30,30 @@ export function clearAccessToken() {
   localStorage.removeItem('access_token');
 }
 
-function addAccessToken(url: string): string {
-  const qsSeperator = url.includes('?') ? '&' : '?';
-  return url.concat(qsSeperator + 'access_token=' + getAccessToken());
+function appendOptionsInUrl(url: string, options:any): any {
+
+  Object.keys(options).map((key)=>{
+    const value:any = options[key];
+    const qsSeperator:string = url.includes('?') ? "&" : "?";
+    url = url+qsSeperator+key+"="+value;
+  })
+  return url;
 }
 
-export async function getData(url = '', options: APIOptions = {}) {
-  const basePath = options.basePath || import.meta.env.REACT_APP_API_BASEPATH;
-  const tokenRequiredInUrl = !!options.sendTokenInUrl;
-  if (tokenRequiredInUrl) {
-    url = addAccessToken(url);
-  }
-  const finalUrl = `${basePath}${url}`;
+export async function getData(useBikeTheftCoreAPI:boolean = true, options:any = {}) {
+  const basePath:string = useBikeTheftCoreAPI ? import.meta.env.VITE_REACT_APP_BIKE_THEFT_API : '';
+  const finalURL = appendOptionsInUrl(basePath,options);
   const finalOptions: any = { method: 'get' };
-  if (options.headers) {
-    finalOptions.headers = options.headers;
-  }
-  const tokenRequiredInHeader = !!options.sendTokenInHeader;
-  if (tokenRequiredInHeader) {
-    finalOptions.headers = finalOptions.headers || {};
-    finalOptions.headers['Authorization'] = `Bearer ${getAccessToken()}`
-  }
-
-  const response = await fetch(finalUrl, finalOptions)
+  const response = await fetch(finalURL, finalOptions)
   const responseData = options?.isBlob ? await response.blob() : await response.json();
+
   if (responseData.error) {
     const { statusCode, name, message } = responseData.error;
-    console.log(name, message);
+   
     switch (statusCode) {
       case 401:
         if (window.location.pathname !== '/login') {
-        //   logoutUser()
-        //     .then(() => {
-        //       window.location.replace('/login')
-        //     })
+          console.log(name, message);
         }
         break;
       default:
