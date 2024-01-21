@@ -1,0 +1,8 @@
+.dfc{
+    display: flex;
+    flex-direction: column;
+}
+.dfr{
+    display: flex;
+    flex-direction: row;
+}

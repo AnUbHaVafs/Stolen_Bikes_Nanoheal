@@ -1,0 +1,20 @@
+.homePage{
+    width: 100%;
+}
+.bykes-theft-section{
+    margin:auto;
+    width: 80%;
+    /* background-color: red; */
+}
+.filters{
+    /* height: 50px; */
+    /* margin: auto; */
+    gap: 10px;
+    /* background-color: yellow; */
+}
+.case-title{
+    margin: 1px;
+}
+.from-date-picker{
+    margin: auto;
+}

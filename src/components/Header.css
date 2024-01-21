@@ -1,0 +1,29 @@
+.header{
+    height: 20vh;
+    width: 80%;
+    /* margin: auto; */
+    justify-content: start;
+    /* background-color: blue; */
+    margin-bottom: 20px;
+    gap: 10px;
+    img{
+        height: 90%;
+        margin: auto 10px auto 5%;
+        /* width: 30px; */
+    }
+
+}
+.headings{
+    /* background-color: red; */
+    justify-content: center;
+    gap: 5%;
+}
+.department-name{
+    font-size: 4vw;
+    margin: 0px;
+}
+.department-motto{
+    font-size: 20px;
+    margin: 0px;
+    margin-left: 1px;
+}
