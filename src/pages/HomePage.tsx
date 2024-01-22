@@ -11,18 +11,67 @@ import { getBikesThefts } from "../services/bikesThefts.service";
 import Header from "../components/Header";
 import "./HomePage.css";
 
+interface StolenBikes {
+  cycle_type_slug?: string,
+  date_stolen?: string | null,
+  description?: string | null,
+  external_id?: null,
+  frame_colors?: Array<string>,
+  frame_model?: string,
+  id: number,
+  is_stock_img?: boolean,
+  large_img?: string | null,
+  location_found?: string,
+  manufacturer_name?: string,
+  propulsion_type_slug?: string,
+  registry_name?: null,
+  registry_url?: null,
+  serial?: string,
+  status?: string,
+  stolen?: boolean,
+  stolen_coordinates?: Array<number> | null,
+  stolen_location?: string | null,
+  thumb?: string | null,
+  title?: string,
+  url?: string,
+  year?: string | number | null,
+}
+
+interface Error{
+  text:string,
+  isError:boolean
+}
+
+interface Loader{
+  text:string, 
+  isLoading:boolean
+}
+
+interface UrlOptions {
+  location: string,
+  distance: number,
+  stolenness: string,
+  query: string,
+}    
+
 const stolenBikesInfoLabels:string[] = ["Location", "Stolen", "Serial"];
 const stolenBikesInfoLabelsKeys:string[] = ["stolen_location", "date_stolen", "serial"];
 
 const HomePage: React.FC = (): JSX.Element => {
 
-  const [stolenBikesArr, setStolenBikesArr] = useState<any[]>([]);
+  const [stolenBikesArr, setStolenBikesArr] = useState<StolenBikes[]>([]);
   const [totalBikesCount, setTotalBikesCount] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [userQuery, setUserQuery] = useState<string>("");
   const [currPage, setCurrPage] = useState<number>(1);
-  const [showLoader, setShowLoader] = useState<any>({text:"Loading",isLoading:false});
-  const [showError, setShowError] = useState<any>({text:"Error Fetching!", isError:false});
+  const [showLoader, setShowLoader] = useState<Loader>({
+    text: "Loading",
+    isLoading: false,
+  });
+  const [showError, setShowError] = useState<Error>({
+    text: "Error Fetching!",
+    isError: false,
+  });
 
   useEffect(() => {
     // initially, userQuery=""
@@ -32,7 +81,7 @@ const HomePage: React.FC = (): JSX.Element => {
 
   const fetchStolenBikesUsingQuery = async (userQuery:string)=>{
 
-    const urlOptions: any = {
+    const urlOptions: UrlOptions = {
       location: "Berlin",
       distance: 10,
       stolenness: "stolen",
@@ -41,7 +90,7 @@ const HomePage: React.FC = (): JSX.Element => {
     
     // set loader
     setShowLoader({ text: "loading ...", isLoading:true });
-    const updatedStolenBikes: any = await getBikesThefts(urlOptions);
+    const updatedStolenBikes = await getBikesThefts(urlOptions);
 
     // error handling
     if(updatedStolenBikes?.error){
@@ -59,8 +108,8 @@ const HomePage: React.FC = (): JSX.Element => {
       
   };
 
-
-  const handleDescriptionChange = (e:any)=>{
+  console.log(stolenBikesArr);  
+  const handleDescriptionChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
     setUserQuery(e.target.value);
     fetchStolenBikesUsingQuery(e.target.value);
   }
@@ -74,7 +123,6 @@ const HomePage: React.FC = (): JSX.Element => {
       <Header />
 
       <div className="bykes-theft-section dfc">
-
         {/* filters*/}
         <div className="filters dfr">
           {/* case description */}
@@ -111,7 +159,7 @@ const HomePage: React.FC = (): JSX.Element => {
             </DemoContainer>
           </LocalizationProvider>
           <Button
-            sx={{ margin: 2, color: "red", borderColor: "red"}}
+            sx={{ margin: 2, color: "red", borderColor: "red" }}
             variant="outlined"
           >
             Find Cases
@@ -135,9 +183,8 @@ const HomePage: React.FC = (): JSX.Element => {
         </div>
 
         <div className="stolen-bykes-list dfc">
-          
           {/* Requirements handling: Error */}
-          {showError.error && <p>{showError.text}</p>}
+          {showError.isError && <p>{showError.text}</p>}
 
           {/* Requirements handling: Loader */}
           {showLoader.isLoading ? (
@@ -147,10 +194,10 @@ const HomePage: React.FC = (): JSX.Element => {
             !showLoader.isLoading &&
             stolenBikesArr
               .slice(10 * currPage - 10, 10 * currPage)
-              .map((stolenBike: any, index: number) => {
+              .map((stolenBike: StolenBikes, index: number) => {
                 return (
                   <div
-                    key={index + stolenBike.id}
+                    key={`${index}-${index * 10 + stolenBike.id}`}
                     className="stolen-bike-card dfr"
                   >
                     <div className="stolen-img-div dfr">
@@ -165,7 +212,8 @@ const HomePage: React.FC = (): JSX.Element => {
                       <p className="stole-bike-title">{stolenBike.title}</p>
                       {/* description */}
                       <p className="stole-bike-description">
-                        {stolenBike.description?.length > 100
+                        {stolenBike.description && stolenBike.description?.length >
+                        100
                           ? stolenBike.description.slice(0, 100)
                           : stolenBike.description}
                       </p>
@@ -174,13 +222,16 @@ const HomePage: React.FC = (): JSX.Element => {
                       <div className="stolen-bike-locators dfr">
                         {stolenBikesInfoLabels.map(
                           (label: string, i: number) => {
-                            const key = stolenBikesInfoLabelsKeys[i];
+                            const key:string = stolenBikesInfoLabelsKeys[i];
                             return (
-                              <div className="stolen-bike-location dfr">
+                              <div
+                                key={`${key}-${label}-${i}`}
+                                className="stolen-bike-location dfr"
+                              >
                                 <p className="stolen-bike-info-labels">
                                   {label}:
                                 </p>
-                                <p>{stolenBike[key]} </p>
+                                <p>{stolenBike[key as keyof StolenBikes]} </p>
                               </div>
                             );
                           }
