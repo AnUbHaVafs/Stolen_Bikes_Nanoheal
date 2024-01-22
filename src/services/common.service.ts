@@ -41,11 +41,12 @@ function appendOptionsInUrl(url: string, options:any): any {
 }
 
 export async function getData(useBikeTheftCoreAPI:boolean = true, options:any = {}) {
-  const basePath:string = useBikeTheftCoreAPI ? import.meta.env.REACT_APP_BIKE_THEFT_API : '';
+  console.log(import.meta.env.REACT_APP_BIKE_THEFT_API);
+  const basePath:string = useBikeTheftCoreAPI ? import.meta.env.VITE_REACT_APP_BIKE_THEFT_API! : '';
   const finalURL = appendOptionsInUrl(basePath,options);
   const finalOptions: any = { method: 'get' };
   const response = await fetch(finalURL, finalOptions)
-  const responseData = options?.isBlob ? await response.blob() : await response.json();
+  const responseData = options?.isBlob ? await response.blob  () : await response.json();
 
   if (responseData.error) {
     const { statusCode, name, message } = responseData.error;
