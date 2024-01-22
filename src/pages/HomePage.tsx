@@ -11,6 +11,7 @@ import { getBikesThefts } from "../services/bikesThefts.service";
 import Header from "../components/Header";
 import "./HomePage.css";
 import { noImage } from "../interfaces";
+import { isArrayWithLength } from "../utils/helper";
 
 interface StolenBikes {
   cycle_type_slug?: string,
@@ -58,6 +59,7 @@ interface UrlOptions {
 const stolenBikesInfoLabels:string[] = ["Location", "Stolen", "Serial"];
 const stolenBikesInfoLabelsKeys:string[] = ["stolen_location", "date_stolen", "serial"];
 
+
 const HomePage: React.FC = (): JSX.Element => {
 
   const [stolenBikesArr, setStolenBikesArr] = useState<StolenBikes[]>([]);
@@ -73,6 +75,10 @@ const HomePage: React.FC = (): JSX.Element => {
     text: "Error Fetching!",
     isError: false,
   });
+  const [showNoResults, setShowNoResults] = useState<any>({
+    text: "No Results!",
+    areNoResults: false,
+  });
 
   useEffect(() => {
     // initially, userQuery=""
@@ -81,37 +87,57 @@ const HomePage: React.FC = (): JSX.Element => {
 
 
   const fetchStolenBikesUsingQuery = async (userQuery:string)=>{
-
     const urlOptions: UrlOptions = {
       location: "Berlin",
       distance: 10,
       stolenness: "stolen",
       query: userQuery,
     };
-    
     // set loader
     setShowLoader({ text: "loading ...", isLoading:true });
+    setShowNoResults({ text: "", areNoResults: false });
+    setShowError({ text: "", isError: false });
+    
     const updatedStolenBikes = await getBikesThefts(urlOptions);
-
+    
     // error handling
     if(updatedStolenBikes?.error){
       setShowError({text:"Ooops, something went wrong!", isError:true});
-      setShowLoader({ text: "", isLoading:false });
+      setShowNoResults({ text: "", areNoResults: false });
+      setShowLoader({ text: "", isLoading: false });
+      setStolenBikesArr([]);
+      setTotalBikesCount(0);
+      setTotalPage(0);
+      setCurrPage(0);
       return;
     }
-
-    const stolenBikesCount: number = updatedStolenBikes?.bikes.length;
+    const newStolenBikesArr:StolenBikes[] = updatedStolenBikes?.bikes;
+    const stolenBikesCount:number = newStolenBikesArr.length;
+    // no results
+    if (!isArrayWithLength(newStolenBikesArr)) {
+      setShowNoResults({ text: "No Results!", areNoResults: true });
+      setShowError({ text: "", isError: false });
+      setShowLoader({ text: "", isLoading: false });
+      setStolenBikesArr([]);
+      setTotalBikesCount(0);
+      setTotalPage(0);
+      setCurrPage(0);
+      return;
+    }
     // data
-    setStolenBikesArr(updatedStolenBikes?.bikes);
+    setStolenBikesArr(newStolenBikesArr);
     setTotalBikesCount(stolenBikesCount);
     setTotalPage(Math.ceil(stolenBikesCount / 10)); // per_page = 10 
-    if (updatedStolenBikes) setShowLoader({ text: "", isLoading:false });
-      
+    setCurrPage(1);
+    if (isArrayWithLength(updatedStolenBikes.bikes)){
+      setShowLoader({ text: "", isLoading: false });
+    }
+    return;
   };
 
-  const handleDescriptionChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
+  const handleQuery = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
     setUserQuery(e.target.value);
-    fetchStolenBikesUsingQuery(e.target.value);
+    fetchStolenBikesUsingQuery(e.target.value || "");
   }
 
   const handlePagination = (_: React.ChangeEvent<unknown>, pageNumber: number) => {
@@ -127,11 +153,7 @@ const HomePage: React.FC = (): JSX.Element => {
         <div className="filters dfr">
           {/* case description */}
           <TextField
-            sx={{
-              margin: 1,
-              width: 550,
-              minWidth: 200,
-            }}
+            sx={caseInputStyle}
             className="case-title"
             label="Search Case Descriptions"
             placeholder="Case"
@@ -139,7 +161,7 @@ const HomePage: React.FC = (): JSX.Element => {
             color="success"
             value={userQuery}
             focused
-            onChange={handleDescriptionChange}
+            onChange={handleQuery}
           />
           {/* date pickers */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -183,14 +205,11 @@ const HomePage: React.FC = (): JSX.Element => {
         </div>
 
         <div className="stolen-bykes-list dfc">
-          {/* Requirements handling: Error */}
+          {/* Requirements handling: Error, Loader, No Results */}
           {showError.isError && <p>{showError.text}</p>}
-
-          {/* Requirements handling: Loader */}
-          {showLoader.isLoading ? (
-            <p>{showLoader.text}</p>
-          ) : (
-            stolenBikesArr.length > 0 &&
+          {showNoResults.areNoResults && <p>{showNoResults.text}</p>}
+          {showLoader.isLoading && <p>{showLoader.text}</p>}
+          {isArrayWithLength(stolenBikesArr) &&
             !showLoader.isLoading &&
             stolenBikesArr
               .slice(10 * currPage - 10, 10 * currPage)
@@ -201,11 +220,7 @@ const HomePage: React.FC = (): JSX.Element => {
                     className="stolen-bike-card dfr"
                   >
                     <div className="stolen-img-div dfr">
-                      <img
-                        className="stolen-bike-img"
-                        src={stolenBike.large_img || noImage}
-                        alt="bike_image"
-                      />
+                      <img className="stolen-bike-img" src={stolenBike.large_img || noImage} alt="bike_image"/>
                     </div>
                     <div className="stolen-bike-info dfc">
                       {/* title */}
@@ -240,8 +255,7 @@ const HomePage: React.FC = (): JSX.Element => {
                     </div>
                   </div>
                 );
-              })
-          )}
+              })}
         </div>
       </div>
     </div>
@@ -249,3 +263,9 @@ const HomePage: React.FC = (): JSX.Element => {
 };
 
 export default HomePage;
+
+const caseInputStyle = {
+  margin: 1,
+  width: 550,
+  minWidth: 200,
+};
