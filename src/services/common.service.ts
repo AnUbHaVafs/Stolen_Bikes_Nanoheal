@@ -41,8 +41,8 @@ function appendOptionsInUrl(url: string, options:any): any {
 }
 
 export async function getData(useBikeTheftCoreAPI:boolean = true, options:any = {}) {
-  console.log(import.meta.env.REACT_APP_BIKE_THEFT_API);
-  const basePath:string = useBikeTheftCoreAPI ? import.meta.env.REACT_APP_BIKE_THEFT_API! : '';
+  console.log(import.meta.env.VITE_REACT_APP_BIKE_THEFT_API);
+  const basePath:string = useBikeTheftCoreAPI ? import.meta.env.VITE_REACT_APP_BIKE_THEFT_API! : '';
   const finalURL = appendOptionsInUrl(basePath,options);
   const finalOptions: any = { method: 'get' };
   const response = await fetch(finalURL, finalOptions)
