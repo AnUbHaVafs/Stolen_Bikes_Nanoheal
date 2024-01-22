@@ -49,15 +49,13 @@ export async function getData(useBikeTheftCoreAPI:boolean = true, options:any = 
 
   if (responseData.error) {
     const { statusCode, name, message } = responseData.error;
-   
+    console.log(name, message);
     switch (statusCode) {
       case 401:
-        if (window.location.pathname !== '/login') {
-          console.log(name, message);
-        }
+        return responseData;
         break;
       default:
-        return responseData
+        return responseData;
     }
   } else {
     return responseData;
