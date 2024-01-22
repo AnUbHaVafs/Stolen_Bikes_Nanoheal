@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import Pagination from "@mui/material/Pagination";
 import { Button, TextField } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -12,6 +13,7 @@ import Header from "../components/Header";
 import "./HomePage.css";
 import { noImage } from "../interfaces";
 import { isArrayWithLength } from "../utils/helper";
+import { blueGrey, purple } from "@mui/material/colors";
 
 interface StolenBikes {
   cycle_type_slug?: string,
@@ -152,17 +154,19 @@ const HomePage: React.FC = (): JSX.Element => {
         {/* filters*/}
         <div className="filters dfr">
           {/* case description */}
-          <TextField
-            sx={caseInputStyle}
-            className="case-title"
-            label="Search Case Descriptions"
-            placeholder="Case"
-            variant="filled"
-            color="success"
-            value={userQuery}
-            focused
-            onChange={handleQuery}
-          />
+          <ThemeProvider theme={theme}>
+            <TextField
+              sx={caseInputStyle}
+              className="case-title"
+              label="Case Descriptions"
+              placeholder="Case"
+              // variant="filled"
+              color="primary"
+              value={userQuery}
+              focused
+              onChange={handleQuery}
+              />
+          </ThemeProvider>
           {/* date pickers */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
@@ -170,18 +174,35 @@ const HomePage: React.FC = (): JSX.Element => {
               <DatePicker
                 className="from-date-picker"
                 label="From"
-                sx={{ width: 20 }}
+                sx={{
+                  width: 20,
+                  "& .MuiOutlinedInput-root": {
+                    "&:hover > fieldset": { borderColor: "#C7C8CD" },
+                    borderRadius: "50px",
+                  },
+                }}
               />
               {/* to */}
               <DatePicker
                 className="to-date-picker"
                 label="To"
-                sx={{ width: 20 }}
+                sx={{
+                  width: 20,
+                  "& .MuiOutlinedInput-root": {
+                    "&:hover > fieldset": { borderColor: "#C7C8CD" },
+                    borderRadius: "50px",
+                  },
+                }}
               />
             </DemoContainer>
           </LocalizationProvider>
           <Button
-            sx={{ margin: 2, color: "red", borderColor: "red" }}
+            sx={{
+              margin: 2,
+              color: "red",
+              borderColor: "red",
+              borderRadius: 50,
+            }}
             variant="outlined"
           >
             Find Cases
@@ -220,7 +241,11 @@ const HomePage: React.FC = (): JSX.Element => {
                     className="stolen-bike-card dfr"
                   >
                     <div className="stolen-img-div dfr">
-                      <img className="stolen-bike-img" src={stolenBike.large_img || noImage} alt="bike_image"/>
+                      <img
+                        className="stolen-bike-img"
+                        src={stolenBike.large_img || noImage}
+                        alt="bike_image"
+                      />
                     </div>
                     <div className="stolen-bike-info dfc">
                       {/* title */}
@@ -264,8 +289,21 @@ const HomePage: React.FC = (): JSX.Element => {
 
 export default HomePage;
 
+// Date Picker stylesObject
 const caseInputStyle = {
   margin: 1,
   width: 550,
   minWidth: 200,
+  "& .MuiOutlinedInput-root": {
+    borderRadius: "50px",
+    color:"gray",
+  },
 };
+
+// Theme for MUI components
+const theme = createTheme({
+  palette: {
+    primary: blueGrey,
+    secondary: purple,
+  },
+});
