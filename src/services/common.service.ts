@@ -42,7 +42,7 @@ function appendOptionsInUrl(url: string, options:any): any {
 
 export async function getData(useBikeTheftCoreAPI:boolean = true, options:any = {}) {
   console.log(import.meta.env.VITE_REACT_APP_BIKE_THEFT_API);
-  const basePath:string = useBikeTheftCoreAPI ? import.meta.env.VITE_REACT_APP_BIKE_THEFT_API! : '';
+  const basePath:string = useBikeTheftCoreAPI ? "https://bikeindex.org:443/api/v3/search" : '';
   const finalURL = appendOptionsInUrl(basePath,options);
   const finalOptions: any = { method: 'get' };
   const response = await fetch(finalURL, finalOptions)
