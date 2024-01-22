@@ -10,6 +10,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { getBikesThefts } from "../services/bikesThefts.service";
 import Header from "../components/Header";
 import "./HomePage.css";
+import { noImage } from "../interfaces";
 
 interface StolenBikes {
   cycle_type_slug?: string,
@@ -203,7 +204,7 @@ const HomePage: React.FC = (): JSX.Element => {
                     <div className="stolen-img-div dfr">
                       <img
                         className="stolen-bike-img"
-                        src={stolenBike.large_img || "src/assets/no-image.png"}
+                        src={stolenBike.large_img || noImage}
                         alt="bike_image"
                       />
                     </div>
@@ -212,8 +213,8 @@ const HomePage: React.FC = (): JSX.Element => {
                       <p className="stole-bike-title">{stolenBike.title}</p>
                       {/* description */}
                       <p className="stole-bike-description">
-                        {stolenBike.description && stolenBike.description?.length >
-                        100
+                        {stolenBike.description &&
+                        stolenBike.description?.length > 100
                           ? stolenBike.description.slice(0, 100)
                           : stolenBike.description}
                       </p>
@@ -222,7 +223,7 @@ const HomePage: React.FC = (): JSX.Element => {
                       <div className="stolen-bike-locators dfr">
                         {stolenBikesInfoLabels.map(
                           (label: string, i: number) => {
-                            const key:string = stolenBikesInfoLabelsKeys[i];
+                            const key: string = stolenBikesInfoLabelsKeys[i];
                             return (
                               <div
                                 key={`${key}-${label}-${i}`}
