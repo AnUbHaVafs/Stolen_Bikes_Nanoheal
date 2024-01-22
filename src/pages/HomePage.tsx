@@ -49,10 +49,10 @@ interface Loader{
 }
 
 interface UrlOptions {
-  location: string,
-  distance: number,
-  stolenness: string,
-  query: string,
+  location?: string,
+  distance?: number,
+  stolenness?: string,
+  query?: string,
 }    
 
 const stolenBikesInfoLabels:string[] = ["Location", "Stolen", "Serial"];
@@ -109,7 +109,6 @@ const HomePage: React.FC = (): JSX.Element => {
       
   };
 
-  console.log(stolenBikesArr);  
   const handleDescriptionChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
     setUserQuery(e.target.value);
     fetchStolenBikesUsingQuery(e.target.value);
