@@ -58,7 +58,7 @@ const HomePage: React.FC = (): JSX.Element => {
     if (updatedStolenBikes) setShowLoader({ text: "", isLoading:false });
       
   };
-  
+
 
   const handleDescriptionChange = (e:any)=>{
     setUserQuery(e.target.value);
@@ -74,9 +74,9 @@ const HomePage: React.FC = (): JSX.Element => {
       <Header />
 
       <div className="bykes-theft-section dfc">
-        {/* case descriptions | from | to | find cases */}
+
+        {/* filters*/}
         <div className="filters dfr">
-          
           {/* case description */}
           <TextField
             sx={{
@@ -93,7 +93,6 @@ const HomePage: React.FC = (): JSX.Element => {
             focused
             onChange={handleDescriptionChange}
           />
-
           {/* date pickers */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
@@ -111,9 +110,8 @@ const HomePage: React.FC = (): JSX.Element => {
               />
             </DemoContainer>
           </LocalizationProvider>
-
           <Button
-            sx={{ margin: 2, color: "red", borderColor: "red" }}
+            sx={{ margin: 2, color: "red", borderColor: "red"}}
             variant="outlined"
           >
             Find Cases
@@ -188,8 +186,6 @@ const HomePage: React.FC = (): JSX.Element => {
                           }
                         )}
                       </div>
-
-                      <p></p>
                     </div>
                   </div>
                 );
