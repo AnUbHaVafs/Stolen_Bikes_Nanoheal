@@ -14,6 +14,7 @@ import "./HomePage.css";
 import { noImage } from "../interfaces";
 import { isArrayWithLength } from "../utils/helper";
 import { blueGrey, purple } from "@mui/material/colors";
+import dayjs from "dayjs";
 
 interface StolenBikes {
   cycle_type_slug?: string,
@@ -146,6 +147,19 @@ const HomePage: React.FC = (): JSX.Element => {
     setCurrPage(pageNumber);
   };
 
+  const dateFormatter = (index:number)=>{
+    const dateValue = stolenBikesArr[index]["date_stolen"];
+    let readableDateFormat: string = "";
+    if (dateValue) {
+      // Unix time in seconds
+      const unixTime = parseInt(dateValue);
+      const utcDate = new Date(unixTime * 1000);
+      // return formatted date
+      readableDateFormat = dayjs(utcDate.toISOString().split("T")[0]).format("MMMM D, YYYY");
+    }
+    return readableDateFormat;
+  }
+
   return (
     <div className="homePage">
       <Header />
@@ -165,44 +179,20 @@ const HomePage: React.FC = (): JSX.Element => {
               value={userQuery}
               focused
               onChange={handleQuery}
-              />
+            />
           </ThemeProvider>
           {/* date pickers */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
               {/* from */}
-              <DatePicker
-                className="from-date-picker"
-                label="From"
-                sx={{
-                  width: 20,
-                  "& .MuiOutlinedInput-root": {
-                    "&:hover > fieldset": { borderColor: "#C7C8CD" },
-                    borderRadius: "50px",
-                  },
-                }}
+              <DatePicker className="from-date-picker" label="From" sx={datePickerStyle}
               />
               {/* to */}
-              <DatePicker
-                className="to-date-picker"
-                label="To"
-                sx={{
-                  width: 20,
-                  "& .MuiOutlinedInput-root": {
-                    "&:hover > fieldset": { borderColor: "#C7C8CD" },
-                    borderRadius: "50px",
-                  },
-                }}
-              />
+              <DatePicker className="to-date-picker" label="To" sx={datePickerStyle} />
             </DemoContainer>
           </LocalizationProvider>
           <Button
-            sx={{
-              margin: 2,
-              color: "red",
-              borderColor: "red",
-              borderRadius: 50,
-            }}
+            sx={findCaseButtonStyle}
             variant="outlined"
           >
             Find Cases
@@ -231,7 +221,7 @@ const HomePage: React.FC = (): JSX.Element => {
           {showNoResults.areNoResults && <p>{showNoResults.text}</p>}
           {showLoader.isLoading && <p>{showLoader.text}</p>}
           {isArrayWithLength(stolenBikesArr) &&
-            !showLoader.isLoading &&
+            !showLoader.isLoading && !showError.isError && !showNoResults.areNoResults &&
             stolenBikesArr
               .slice(10 * currPage - 10, 10 * currPage)
               .map((stolenBike: StolenBikes, index: number) => {
@@ -249,7 +239,7 @@ const HomePage: React.FC = (): JSX.Element => {
                     </div>
                     <div className="stolen-bike-info dfc">
                       {/* title */}
-                      <p className="stole-bike-title">{stolenBike.title}</p>
+                      <p className="stole-bike-title">{stolenBike.title?.toLowerCase()}</p>
                       {/* description */}
                       <p className="stole-bike-description">
                         {stolenBike.description &&
@@ -263,6 +253,7 @@ const HomePage: React.FC = (): JSX.Element => {
                         {stolenBikesInfoLabels.map(
                           (label: string, i: number) => {
                             const key: string = stolenBikesInfoLabelsKeys[i];
+                            const hasDate:boolean = stolenBikesInfoLabelsKeys[i]=="date_stolen";
                             return (
                               <div
                                 key={`${key}-${label}-${i}`}
@@ -271,7 +262,9 @@ const HomePage: React.FC = (): JSX.Element => {
                                 <p className="stolen-bike-info-labels">
                                   {label}:
                                 </p>
-                                <p>{stolenBike[key as keyof StolenBikes]} </p>
+                                <p>
+                                  {hasDate ? dateFormatter(index) || "" : stolenBike[key as keyof StolenBikes]}
+                                </p>
                               </div>
                             );
                           }
@@ -298,6 +291,21 @@ const caseInputStyle = {
     borderRadius: "50px",
     color:"gray",
   },
+};
+
+const datePickerStyle = {
+  width: 20,
+  "& .MuiOutlinedInput-root": {
+    "&:hover > fieldset": { borderColor: "#C7C8CD" },
+    borderRadius: "50px",
+  },
+}
+
+const findCaseButtonStyle = {
+  margin: 2,
+  color: "red",
+  borderColor: "red",
+  borderRadius: 50,
 };
 
 // Theme for MUI components
