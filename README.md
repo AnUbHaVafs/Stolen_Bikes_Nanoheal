@@ -4,8 +4,6 @@ Stolen bikes are a typical problem in Berlin. The Police want to be more efficie
 
 ## Product Implementations
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
 - list of reported bike thefts for the Berlin area.
 - See first 10 bike theft cases, with the ability to - paginate (10 cases per page).
 - See a total number of bike theft cases.
@@ -84,4 +82,22 @@ const fetchStolenBikesUsingQuery = async (userQuery:string)=>{
   };
 ```
 
+## WEB and Mobile UIs
+
+Mobile UI: 
+
+![Screenshot (2545)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/f1d5e038-30a4-4ee8-8868-9a1a02f67442)
+
+![Screenshot (2544)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/7ea4618e-22c9-4c6c-9c45-230952f7a2e3)
+
+![Screenshot (2546)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/c5d8442c-b939-4f5c-abac-53750325a1fb)
+
+
+Web UI:
+
+![Screenshot (2503)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/fa83d399-6c15-45c9-aa1e-5c27751cf2e7)
+
+![Screenshot (2502)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/a6372683-e00d-40f3-bea3-efda27cbfe74)
+
+![Screenshot (2500)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/a471ea1d-fb26-4a84-ab43-b6f1fbc8604b)
 
