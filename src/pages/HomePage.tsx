@@ -172,6 +172,7 @@ const HomePage: React.FC = (): JSX.Element => {
             <TextField
               sx={caseInputStyle}
               className="case-title"
+              data-testid="case-description-input"
               label="Case Descriptions"
               placeholder="Case"
               // variant="filled"
@@ -185,15 +186,25 @@ const HomePage: React.FC = (): JSX.Element => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker"]}>
               {/* from */}
-              <DatePicker className="from-date-picker" label="From" sx={datePickerStyle}
+              <DatePicker
+                data-testid="from-datepicker"
+                className="from-date-picker"
+                label="From"
+                sx={datePickerStyle}
               />
               {/* to */}
-              <DatePicker className="to-date-picker" label="To" sx={datePickerStyle} />
+              <DatePicker
+                data-testid="to-datepicker"
+                className="to-date-picker"
+                label="To"
+                sx={datePickerStyle}
+              />
             </DemoContainer>
           </LocalizationProvider>
           <Button
             sx={findCaseButtonStyle}
             variant="outlined"
+            data-testid="find-cases-submit-button"
           >
             Find Cases
           </Button>
@@ -206,13 +217,14 @@ const HomePage: React.FC = (): JSX.Element => {
               count={totalPage}
               page={currPage}
               onChange={handlePagination}
+              data-testid="pagination"
             />
           </Stack>
         </div>
 
         {/* Total Count */}
         <div className="total-stolen-bikes-count dfr">
-          <p>Total: {totalBikesCount}</p>
+          <p data-testid="cases-count">Total: {totalBikesCount}</p>
         </div>
 
         <div className="stolen-bykes-list dfc">
@@ -221,7 +233,9 @@ const HomePage: React.FC = (): JSX.Element => {
           {showNoResults.areNoResults && <p>{showNoResults.text}</p>}
           {showLoader.isLoading && <p>{showLoader.text}</p>}
           {isArrayWithLength(stolenBikesArr) &&
-            !showLoader.isLoading && !showError.isError && !showNoResults.areNoResults &&
+            !showLoader.isLoading &&
+            !showError.isError &&
+            !showNoResults.areNoResults &&
             stolenBikesArr
               .slice(10 * currPage - 10, 10 * currPage)
               .map((stolenBike: StolenBikes, index: number) => {
@@ -239,9 +253,11 @@ const HomePage: React.FC = (): JSX.Element => {
                     </div>
                     <div className="stolen-bike-info dfc">
                       {/* title */}
-                      <p className="stole-bike-title">{stolenBike.title?.toLowerCase()}</p>
+                      <p data-testid="case-card-title" className="stole-bike-title">
+                        {stolenBike.title?.toLowerCase()}
+                      </p>
                       {/* description */}
-                      <p className="stole-bike-description">
+                      <p data-testid="case-card-description" className="stole-bike-description">
                         {stolenBike.description &&
                         stolenBike.description?.length > 100
                           ? stolenBike.description.slice(0, 100)
@@ -253,17 +269,20 @@ const HomePage: React.FC = (): JSX.Element => {
                         {stolenBikesInfoLabels.map(
                           (label: string, i: number) => {
                             const key: string = stolenBikesInfoLabelsKeys[i];
-                            const hasDate:boolean = stolenBikesInfoLabelsKeys[i]=="date_stolen";
+                            const hasDate: boolean =
+                              stolenBikesInfoLabelsKeys[i] == "date_stolen";
                             return (
                               <div
                                 key={`${key}-${label}-${i}`}
                                 className="stolen-bike-location dfr"
                               >
-                                <p className="stolen-bike-info-labels">
+                                <p data-testid="case-card-info" className="stolen-bike-info-labels">
                                   {label}:
                                 </p>
                                 <p>
-                                  {hasDate ? dateFormatter(index) || "" : stolenBike[key as keyof StolenBikes]}
+                                  {hasDate
+                                    ? dateFormatter(index) || ""
+                                    : stolenBike[key as keyof StolenBikes]}
                                 </p>
                               </div>
                             );
