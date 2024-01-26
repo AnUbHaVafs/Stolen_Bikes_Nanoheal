@@ -168,3 +168,6 @@ Web UI:
 
 ![Screenshot (2500)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/a471ea1d-fb26-4a84-ab43-b6f1fbc8604b)
 
+Cypress test cases passed results:
+
+![Screenshot (2554)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/0ed89cd4-802d-46ba-8540-146cf5c5c2c9)
