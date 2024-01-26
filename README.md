@@ -82,6 +82,8 @@ const fetchStolenBikesUsingQuery = async (userQuery:string)=>{
   };
 ```
 
+E2E tests: 
+
 ```js
 
 /// <reference types="cypress" />
@@ -144,26 +146,6 @@ describe('template spec', () => {
     cy.get('[data-testid=case-card-info]').should('exist');
 
   })
-
-  // it('interaction', function() {
-    /* ==== Generated with Cypress Studio ==== */
-    // cy.visit('http://localhost:5173/');
-    // cy.get('#\\:r1\\:').click();
-    // cy.get('#\\:r1\\:').clear('2');
-    // cy.get('#\\:r1\\:').type('202');
-    // cy.get('.MuiButton-root').click();
-    // cy.get('.from-date-picker > .MuiInputBase-root > .MuiInputAdornment-root > .MuiButtonBase-root > [data-testid="CalendarIcon"] > path').click();
-    // cy.get('[data-timestamp="1704047400000"]').click();
-    // cy.get('.to-date-picker > .MuiInputBase-root > .MuiInputAdornment-root > .MuiButtonBase-root > [data-testid="CalendarIcon"]').click();
-    // cy.get('[data-timestamp="1704220200000"]').click();
-    // cy.get('.MuiButton-root').click();
-    // cy.get(':nth-child(3) > .MuiButtonBase-root').click();
-    // cy.get('.MuiPagination-ul > :nth-child(2) > .MuiButtonBase-root').click();
-    // cy.get('.bykes-theft-section').click();
-    // cy.get('.total-stolen-bikes-count > p').click();
-    // cy.get('.total-stolen-bikes-count > p').should('be.visible');
-    /* ==== End Cypress Studio ==== */
-  // });
 })
 
 ```
