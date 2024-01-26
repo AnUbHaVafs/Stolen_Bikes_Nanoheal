@@ -82,6 +82,73 @@ const fetchStolenBikesUsingQuery = async (userQuery:string)=>{
   };
 ```
 
+E2E tests: 
+
+```js
+
+/// <reference types="cypress" />
+
+describe('template spec', () => {
+  it('all components exists', () => {
+    cy.visit('http://localhost:5173/');
+    cy.get('[data-testid=header-logo]').should('exist');
+    cy.get('[data-testid=header-title]').should('exist');
+    cy.get('[data-testid=header-sub-title]').should('exist');
+
+    cy.get('[data-testid=case-description-input]').should('exist');
+    cy.get('[data-testid=find-cases-submit-button]').should('exist');
+    cy.get('[data-testid=pagination]').should('exist');
+    cy.get('[data-testid=cases-count]').should('exist');
+
+    cy.get('[data-testid=case-card-title]').should('exist');
+    cy.get('[data-testid=case-card-description]').should('exist');
+    cy.get('[data-testid=case-card-info]').should('exist');
+
+  })
+
+  it('loader exists', () => {
+    cy.visit('http://localhost:5173/');
+    cy.get('[data-testid=case-description-input]').should('exist');
+
+    // loader exists
+    cy.get('[data-testid=case-description-input]').type("202");
+    cy.contains("loading");
+    // results
+    cy.get('[data-testid=cases-count]').should('exist');
+    cy.get('[data-testid=case-card-title]').should('exist');
+    cy.get('[data-testid=case-card-description]').should('exist');
+    cy.get('[data-testid=case-card-info]').should('exist');
+
+  })
+
+  it('no results exists', () => {
+    cy.visit('http://localhost:5173/');
+    cy.get('[data-testid=case-description-input]').should('exist');
+
+    // no results exists
+    cy.get('[data-testid=case-description-input]').type("check for no results");
+    cy.contains("loading");
+    // cy.contains("No Results");
+
+  })
+
+  it('user queries responses exists', () => {
+    cy.visit('http://localhost:5173/');
+    cy.get('[data-testid=case-description-input]').should('exist');
+    // user search query = "202"
+    cy.get('[data-testid=case-description-input]').type("202");
+    cy.contains("loading");
+
+    // results
+    cy.get('[data-testid=cases-count]').should('exist');
+    cy.get('[data-testid=case-card-title]').should('exist');
+    cy.get('[data-testid=case-card-description]').should('exist');
+    cy.get('[data-testid=case-card-info]').should('exist');
+
+  })
+})
+
+```
 ## WEB and Mobile UIs
 
 Mobile UI: 
@@ -101,3 +168,6 @@ Web UI:
 
 ![Screenshot (2500)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/a471ea1d-fb26-4a84-ab43-b6f1fbc8604b)
 
+Cypress test cases passed results:
+
+![Screenshot (2554)](https://github.com/AnUbHaVafs/Stolen_Bikes_Nanoheal/assets/76126067/0ed89cd4-802d-46ba-8540-146cf5c5c2c9)
