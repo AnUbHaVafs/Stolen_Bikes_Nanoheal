@@ -69,6 +69,8 @@ const HomePage: React.FC = (): JSX.Element => {
   const [totalBikesCount, setTotalBikesCount] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [userQuery, setUserQuery] = useState<string>("");
+  const [fromDate, setFromDate] = useState<number>(0);
+  const [toDate, setToDate] = useState<number>(0);
   const [currPage, setCurrPage] = useState<number>(1);
   const [showLoader, setShowLoader] = useState<Loader>({
     text: "Loading",
@@ -160,6 +162,53 @@ const HomePage: React.FC = (): JSX.Element => {
     return readableDateFormat;
   }
 
+  const handleFindCasesUsingDateRange = ()=>{
+    if(!fromDate){
+      window.alert("Select From Date!");
+      return;
+    }
+    if(!toDate){
+      window.alert("Select To Date!");
+      return;
+    }
+    if (!isArrayWithLength(stolenBikesArr)){
+      window.alert("There are no stolen bikes present!");
+      return;
+    }
+    if (fromDate && toDate && isArrayWithLength(stolenBikesArr)) {
+      const filteredStolenBikesArr = stolenBikesArr.filter(
+        (stolenBike: StolenBikes) => {
+          const bikeStolenDate: any = stolenBike["date_stolen" as keyof StolenBikes];
+          if (bikeStolenDate) {
+            return (
+              parseInt(bikeStolenDate) >= fromDate &&
+              parseInt(bikeStolenDate) <= toDate
+            );
+          }
+        }
+      );
+      // date filtered stolen bikes array
+      setStolenBikesArr(filteredStolenBikesArr);
+      const filteredBikesCount:number = filteredStolenBikesArr.length;
+      if(!filteredBikesCount){
+        setShowNoResults({ text: "No Results!", areNoResults: true });
+        setShowError({ text: "", isError: false });
+        setShowLoader({ text: "", isLoading: false });
+        setTotalBikesCount(0);
+        setTotalPage(0);
+        setCurrPage(0);
+        return;
+      }
+      setTotalPage(Math.ceil(filteredBikesCount / 10));
+      setShowNoResults({ text: "No Results!", areNoResults: false });
+      setShowError({ text: "", isError: false });
+      setShowLoader({ text: "", isLoading: false });
+      setTotalBikesCount(filteredBikesCount);
+      setCurrPage(1);
+      return;
+    }
+  }
+
   return (
     <div className="homePage">
       <Header />
@@ -191,6 +240,9 @@ const HomePage: React.FC = (): JSX.Element => {
                 className="from-date-picker"
                 label="From"
                 sx={datePickerStyle}
+                onChange={(e: any) => {
+                  setFromDate(new Date(e.$d).getTime() / 1000);
+                }}
               />
               {/* to */}
               <DatePicker
@@ -198,6 +250,9 @@ const HomePage: React.FC = (): JSX.Element => {
                 className="to-date-picker"
                 label="To"
                 sx={datePickerStyle}
+                onChange={(e: any) => {
+                  setToDate(new Date(e.$d).getTime() / 1000);
+                }}
               />
             </DemoContainer>
           </LocalizationProvider>
@@ -205,6 +260,7 @@ const HomePage: React.FC = (): JSX.Element => {
             sx={findCaseButtonStyle}
             variant="outlined"
             data-testid="find-cases-submit-button"
+            onClick={handleFindCasesUsingDateRange}
           >
             Find Cases
           </Button>
@@ -253,11 +309,17 @@ const HomePage: React.FC = (): JSX.Element => {
                     </div>
                     <div className="stolen-bike-info dfc">
                       {/* title */}
-                      <p data-testid="case-card-title" className="stole-bike-title">
+                      <p
+                        data-testid="case-card-title"
+                        className="stole-bike-title"
+                      >
                         {stolenBike.title?.toLowerCase()}
                       </p>
                       {/* description */}
-                      <p data-testid="case-card-description" className="stole-bike-description">
+                      <p
+                        data-testid="case-card-description"
+                        className="stole-bike-description"
+                      >
                         {stolenBike.description &&
                         stolenBike.description?.length > 100
                           ? stolenBike.description.slice(0, 100)
@@ -276,7 +338,10 @@ const HomePage: React.FC = (): JSX.Element => {
                                 key={`${key}-${label}-${i}`}
                                 className="stolen-bike-location dfr"
                               >
-                                <p data-testid="case-card-info" className="stolen-bike-info-labels">
+                                <p
+                                  data-testid="case-card-info"
+                                  className="stolen-bike-info-labels"
+                                >
                                   {label}:
                                 </p>
                                 <p>
